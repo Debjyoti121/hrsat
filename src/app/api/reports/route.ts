@@ -1,20 +1,23 @@
 import { NextResponse } from "next/server";
 import { createHash, randomUUID } from "node:crypto";
-import path from "node:path";
+import { inArray } from "drizzle-orm";
 import { z } from "zod";
 import { db, reports, evidence, activities } from "@/lib/db";
-import { VIOLATION_TYPES } from "@/lib/constants";
+import { ALLOWED_EVIDENCE, MAX_EVIDENCE_BYTES, MAX_EVIDENCE_FILES, VIOLATION_TYPES } from "@/lib/constants";
 import { caseId as makeCaseId } from "@/lib/utils";
 import { mail } from "@/lib/mail";
 import { notify } from "@/lib/notify";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { saveEvidence } from "@/lib/storage";
+import { deleteEvidence, readEvidence, saveEvidence, UPLOAD_PATH } from "@/lib/storage";
 
 export const runtime = "nodejs";
 
-const MAX_FILES = 4;
-const MAX_FILE_BYTES = 25 * 1024 * 1024;
-const ALLOWED = /^(image\/|video\/|audio\/|application\/pdf|application\/msword|application\/vnd\.openxmlformats|text\/plain)/;
+// Files the browser already uploaded straight to storage (see /api/uploads)
+const uploadedSchema = z.array(z.object({
+  path: z.string().regex(UPLOAD_PATH),
+  name: z.string().min(1).max(300),
+  type: z.string().max(200),
+})).max(MAX_EVIDENCE_FILES);
 
 const opt = z.string().trim().max(5000).optional().transform((v) => (v ? v : null));
 const schema = z.object({
@@ -32,7 +35,7 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
-  if (!rateLimit("report:" + clientIp(req.headers), 5, 30 * 60_000))
+  if (!rateLimit("report:" + clientIp(req.headers), 20, 30 * 60_000))
     return NextResponse.json({ error: "Too many submissions from this connection. Please try again later." }, { status: 429 });
 
   let form: FormData;
@@ -50,10 +53,30 @@ export async function POST(req: Request) {
   const anonymous = d.anonymous === "yes";
 
   const files = form.getAll("evidence").filter((f): f is File => f instanceof File && f.size > 0);
-  if (files.length > MAX_FILES) return NextResponse.json({ error: `Maximum ${MAX_FILES} files.` }, { status: 400 });
-  for (const f of files) {
-    if (f.size > MAX_FILE_BYTES) return NextResponse.json({ error: `${f.name} is larger than 25 MB.` }, { status: 400 });
-    if (!ALLOWED.test(f.type)) return NextResponse.json({ error: `${f.name}: file type not accepted.` }, { status: 400 });
+  let uploadedRaw: unknown = [];
+  try { uploadedRaw = JSON.parse(String(form.get("uploaded") || "[]")); } catch { uploadedRaw = null; }
+  const uploadedParsed = uploadedSchema.safeParse(uploadedRaw);
+  if (!uploadedParsed.success) return NextResponse.json({ error: "Evidence upload is invalid. Please attach the files again." }, { status: 400 });
+  const uploaded = uploadedParsed.data;
+  if (files.length + uploaded.length > MAX_EVIDENCE_FILES) return NextResponse.json({ error: `Maximum ${MAX_EVIDENCE_FILES} files.` }, { status: 400 });
+  for (const f of [...files, ...uploaded]) {
+    if (f instanceof File && f.size > MAX_EVIDENCE_BYTES) return NextResponse.json({ error: `${f.name} is larger than 25 MB.` }, { status: 400 });
+    if (!ALLOWED_EVIDENCE.test(f.type)) return NextResponse.json({ error: `${f.name}: file type not accepted.` }, { status: 400 });
+  }
+  // Each uploaded object must exist, be within limits, and not already belong to another report
+  const directFiles: { storedAs: string; name: string; type: string; buf: Buffer }[] = [];
+  if (uploaded.length) {
+    const taken = await db.select({ s: evidence.storedAs }).from(evidence).where(inArray(evidence.storedAs, uploaded.map((u) => u.path)));
+    if (taken.length) return NextResponse.json({ error: "Evidence upload is invalid. Please attach the files again." }, { status: 400 });
+    for (const u of uploaded) {
+      const buf = await readEvidence(u.path);
+      if (!buf) return NextResponse.json({ error: `${u.name} did not finish uploading. Please try again.` }, { status: 400 });
+      if (buf.length > MAX_EVIDENCE_BYTES) {
+        await deleteEvidence([u.path]);
+        return NextResponse.json({ error: `${u.name} is larger than 25 MB.` }, { status: 400 });
+      }
+      directFiles.push({ storedAs: u.path, name: u.name, type: u.type, buf });
+    }
   }
   const links = form.getAll("links").map(String).map((s) => s.trim()).filter((s) => /^https?:\/\//i.test(s)).slice(0, 4);
 
@@ -78,19 +101,19 @@ export async function POST(req: Request) {
     priority: /Killing|Torture|Disappearance|Trafficking|Sexual/.test(d.violationType) ? "HIGH" : "MEDIUM",
   });
 
-  if (files.length) {
-    for (const f of files) {
-      const buf = Buffer.from(await f.arrayBuffer());
-      const storedAs = `${randomUUID()}${path.extname(f.name).slice(0, 10).replace(/[^.\w]/g, "")}`;
-      await saveEvidence(storedAs, buf, f.type);
-      await db.insert(evidence).values({
-        reportId: id, fileName: f.name.slice(0, 200), storedAs, mimeType: f.type, size: f.size,
-        sha256: createHash("sha256").update(buf).digest("hex"),
-      });
-    }
+  for (const f of files) {
+    const buf = Buffer.from(await f.arrayBuffer());
+    directFiles.push({ storedAs: await saveEvidence(f.name, buf, f.type), name: f.name, type: f.type, buf });
+  }
+  for (const f of directFiles) {
+    await db.insert(evidence).values({
+      reportId: id, fileName: f.name.slice(0, 200), storedAs: f.storedAs, mimeType: f.type || "application/octet-stream", size: f.buf.length,
+      sha256: createHash("sha256").update(f.buf).digest("hex"),
+    });
   }
 
-  await db.insert(activities).values({ reportId: id, action: "SUBMITTED", detail: `Report received via secure form${files.length ? ` with ${files.length} evidence file(s)` : ""}` });
+  const nFiles = directFiles.length;
+  await db.insert(activities).values({ reportId: id, action: "SUBMITTED", detail: `Report received via secure form${nFiles ? ` with ${nFiles} evidence file(s)` : ""}` });
   await notify({ type: "NEW_REPORT", title: `New report ${caseId}`, body: `${d.violationType}${d.incidentCountry ? ` · ${d.incidentCountry}` : ""}`, href: `/dashboard/reports/${id}` });
   await Promise.all([
     mail.reportReceived(d.reporterEmail, caseId, anonymous ? null : d.reporterName),

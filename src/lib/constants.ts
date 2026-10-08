@@ -63,3 +63,8 @@ export const CONTACT = {
     x: "https://x.com/ghrdthehague",
   },
 };
+
+/** Evidence upload limits (shared by the report form and the API) */
+export const MAX_EVIDENCE_FILES = 4;
+export const MAX_EVIDENCE_BYTES = 25 * 1024 * 1024;
+export const ALLOWED_EVIDENCE = /^(image\/|video\/|audio\/|application\/pdf|application\/msword|application\/vnd\.openxmlformats|text\/plain)/;

@@ -1,4 +1,3 @@
-import path from "node:path";
 import { eq } from "drizzle-orm";
 import { db, evidence, reports, activities } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
@@ -15,8 +14,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const report = await db.query.reports.findFirst({ where: eq(reports.id, file.reportId) });
   if (!report || (me.role !== "ADMIN" && report.reviewerId !== me.id)) return new Response("Forbidden", { status: 403 });
 
-  const safe = path.basename(file.storedAs);
-  const data = await readEvidence(safe);
+  const data = await readEvidence(file.storedAs);
   if (!data) return new Response("File missing from storage", { status: 410 });
 
   const download = new URL(req.url).searchParams.has("download");

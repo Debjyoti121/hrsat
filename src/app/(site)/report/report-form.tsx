@@ -6,7 +6,7 @@ import {
   ArrowLeft, ArrowRight, Check, CheckCircle2, Copy, FileText, Loader2, Lock, Paperclip, Plus, ShieldCheck, Trash2, UploadCloud, X,
 } from "lucide-react";
 import { toast } from "sonner";
-import { COUNTRIES, GENDERS, RELATIONSHIPS, VIOLATION_TYPES, YES_NO_UNKNOWN } from "@/lib/constants";
+import { COUNTRIES, GENDERS, MAX_EVIDENCE_BYTES, MAX_EVIDENCE_FILES, RELATIONSHIPS, VIOLATION_TYPES, YES_NO_UNKNOWN } from "@/lib/constants";
 import { cn, formatBytes } from "@/lib/utils";
 
 const STEPS = [
@@ -18,8 +18,8 @@ const STEPS = [
   { title: "Review & submit", hint: "Declarations" },
 ];
 
-const MAX_FILES = 4;
-const MAX_BYTES = 25 * 1024 * 1024;
+const MAX_FILES = MAX_EVIDENCE_FILES;
+const MAX_BYTES = MAX_EVIDENCE_BYTES;
 
 function Field({ label, name, required, hint, className, ...rest }: React.InputHTMLAttributes<HTMLInputElement> & { label: string; hint?: string }) {
   return (
@@ -82,6 +82,7 @@ export function ReportForm() {
   const [links, setLinks] = useState<string[]>([""]);
   const [drag, setDrag] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [progress, setProgress] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
 
   function validateStep(i: number) {
@@ -119,8 +120,9 @@ export function ReportForm() {
     setSubmitting(true);
     const fd = new FormData(e.currentTarget);
     fd.delete("evidence");
-    files.forEach((f) => fd.append("evidence", f));
     try {
+      if (files.length) await attachEvidence(fd);
+      setProgress("Sending report…");
       const res = await fetch("/api/reports", { method: "POST", body: fd });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error || "Submission failed");
@@ -130,7 +132,31 @@ export function ReportForm() {
       toast.error(err instanceof Error ? err.message : "Submission failed. Please try again.");
     } finally {
       setSubmitting(false);
+      setProgress(null);
     }
+  }
+
+  /** Uploads evidence straight to private storage when the server supports it; otherwise sends it with the form. */
+  async function attachEvidence(fd: FormData) {
+    const res = await fetch("/api/uploads", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ files: files.map((f) => ({ name: f.name, type: f.type, size: f.size })) }),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(json.error || "Could not prepare the upload");
+    if (!json.direct) { files.forEach((f) => fd.append("evidence", f)); return; }
+    const uploaded: { path: string; name: string; type: string }[] = [];
+    for (const [i, f] of files.entries()) {
+      setProgress(`Uploading evidence ${i + 1} of ${files.length}…`);
+      const target = json.targets[i] as { path: string; url: string };
+      const put = await fetch(target.url, {
+        method: "PUT", body: f,
+        headers: { "content-type": f.type || "application/octet-stream", "x-upsert": "false", "cache-control": "max-age=3600" },
+      });
+      if (!put.ok) throw new Error(`${f.name} could not be uploaded. Please check your connection and try again.`);
+      uploaded.push({ path: target.path, name: f.name, type: f.type || "application/octet-stream" });
+    }
+    fd.set("uploaded", JSON.stringify(uploaded));
   }
 
   if (done) {
@@ -337,7 +363,7 @@ export function ReportForm() {
               <button type="button" onClick={() => go(step + 1)} className="btn-ink px-6">Continue <ArrowRight className="size-4" /></button>
             ) : (
               <button type="submit" disabled={submitting} className="btn-gold px-6 py-3">
-                {submitting ? <><Loader2 className="size-4 animate-spin" /> Encrypting & sending…</> : <><Lock className="size-4" /> Submit report</>}
+                {submitting ? <><Loader2 className="size-4 animate-spin" /> {progress ?? "Encrypting & sending…"}</> : <><Lock className="size-4" /> Submit report</>}
               </button>
             )}
           </div>
