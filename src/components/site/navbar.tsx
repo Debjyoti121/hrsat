@@ -35,7 +35,7 @@ export function Navbar() {
     <header className="fixed inset-x-0 top-0 z-50">
       <QuickExitShortcut />
       <div className={cn("border-b transition-colors duration-300",
-        solid ? "border-transparent bg-ink-900 shadow-[0_8px_24px_-12px_rgba(0,0,0,.45)]" : "border-white/10 bg-transparent")}>
+        solid ? "border-transparent bg-ink-900 shadow-[0_8px_24px_-12px_rgba(0,0,0,.45)]" : "border-white/10 bg-[linear-gradient(180deg,rgba(22,29,61,.92)_0%,rgba(22,29,61,.7)_60%,rgba(22,29,61,.35)_100%)]")}>
         <nav className="container-x flex h-20 items-center gap-8 lg:h-[92px]">
           <Logo className="h-14 lg:h-[68px]" />
           <ul className="ml-auto hidden h-full items-stretch gap-1 lg:flex">
@@ -44,7 +44,7 @@ export function Navbar() {
               return (
                 <li key={l.href} className="relative flex">
                   <Link href={l.href} className={cn("flex items-center px-3.5 text-[15px] font-medium transition-colors",
-                    active ? "text-white" : "text-white/75 hover:text-white")}>
+                    active ? "text-white" : "text-white/90 hover:text-white")}>
                     {l.label}
                   </Link>
                   {active && <span className="absolute inset-x-3.5 bottom-0 h-[3px] rounded-t bg-gold-500" />}
