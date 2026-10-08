@@ -1,45 +1,47 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-manrope), var(--font-inter), ui-sans-serif, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
 
-  --color-ink-950: #060d1f;
-  --color-ink-900: #0b1630;
-  --color-ink-800: #13214a;
-  --color-ink-700: #1d2f63;
-  --color-ink-600: #2c4280;
-  --color-gold-300: #f3cf8f;
-  --color-gold-400: #eebb5f;
-  --color-gold-500: #e7a33e;
-  --color-gold-600: #c9852a;
-  --color-paper: #f7f5f0;
-  --color-paper-2: #efebe1;
-  --color-line: #e5e0d3;
+  /* hrsat.org brand palette */
+  --color-ink-950: #161d3d;
+  --color-ink-900: #212b54; /* primary navy */
+  --color-ink-800: #2b3768;
+  --color-ink-700: #182565; /* deep royal navy (section headings) */
+  --color-ink-600: #082c4f; /* dark teal-navy */
+  --color-gold-300: #f5d39f;
+  --color-gold-400: #efb965;
+  --color-gold-500: #eaa64a; /* amber buttons & accents */
+  --color-gold-600: #ca8e25;
+  --color-paper: #ffffff;
+  --color-paper-2: #eaf6fe; /* light blue section background */
+  --color-cream: #fefdf8;
+  --color-body: #525876;   /* body text */
+  --color-line: #d8dee8;
 
-  --animate-marquee: marquee 40s linear infinite;
   --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(.2,.6,.4,1) infinite;
-  @keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
   @keyframes pulse-ring { 0% { transform: scale(.8); opacity: .7 } 100% { transform: scale(2.2); opacity: 0 } }
 }
 
 @layer base {
   html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
   body { @apply bg-paper text-ink-900 font-sans; }
+  h1, h2, h3, h4, h5, h6, .btn, nav { font-family: var(--font-heading); }
   ::selection { background: var(--color-gold-400); color: var(--color-ink-900); }
   :focus-visible { outline: 2px solid var(--color-gold-500); outline-offset: 2px; }
 }
 
 @utility container-x { @apply mx-auto w-full max-w-7xl px-5 sm:px-8; }
-@utility eyebrow { @apply inline-flex items-center gap-2 rounded-full border border-current/15 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.16em]; }
-@utility btn { @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-50; }
-@utility btn-gold { @apply btn bg-gold-500 text-ink-900 shadow-[0_1px_0_rgba(255,255,255,.4)_inset,0_8px_24px_-8px_rgba(231,163,62,.7)] hover:bg-gold-400; }
+@utility eyebrow { @apply inline-block font-heading text-sm font-semibold; }
+@utility btn { @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 font-heading text-sm font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-50; }
+@utility btn-gold { @apply btn bg-gold-500 text-ink-900 hover:bg-gold-600 hover:text-white; }
 @utility btn-ink { @apply btn bg-ink-900 text-white hover:bg-ink-800; }
 @utility btn-ghost { @apply btn border border-ink-900/15 text-ink-900 hover:bg-ink-900/5; }
 @utility btn-ghost-light { @apply btn border border-white/20 text-white hover:bg-white/10; }
-@utility display { @apply text-balance font-semibold tracking-[-0.035em]; }
-@utility serif-accent { @apply font-serif font-normal italic tracking-normal; }
+@utility display { @apply text-balance font-heading font-bold tracking-[-0.02em]; }
+@utility serif-accent { @apply font-heading; }
 @utility field-label { @apply mb-1.5 block text-sm font-medium text-ink-900; }
 @utility field-hint { @apply mt-1 text-xs text-slate-500; }
 @utility input { @apply w-full rounded-xl border border-line bg-white px-3.5 py-2.5 text-[15px] text-ink-900 shadow-[0_1px_2px_rgba(11,22,48,.04)] outline-none transition placeholder:text-slate-400 focus:border-gold-500 focus:ring-4 focus:ring-gold-500/15; }
@@ -47,15 +49,6 @@
 @utility card { @apply rounded-2xl border border-slate-200/80 bg-white shadow-[0_1px_2px_rgba(15,23,42,.04)]; }
 @utility dash-input { @apply w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-ink-600 focus:ring-4 focus:ring-ink-600/10; }
 
-  .grid-bg {
-    background-image: linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
-    background-size: 64px 64px;
-  }
-  .noise::after {
-    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .06; mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }

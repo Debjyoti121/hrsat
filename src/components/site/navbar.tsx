@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowUpRight, Menu, ShieldCheck, X } from "lucide-react";
+import { Menu, ShieldCheck, X } from "lucide-react";
 import { Logo } from "./logo";
 import { QuickExit } from "./quick-exit";
 import { cn } from "@/lib/utils";
@@ -40,28 +40,24 @@ export function Navbar() {
         </div>
       </div>
       <div className={cn("transition-all duration-300",
-        scrolled || open ? "border-b border-white/10 bg-ink-900/85 backdrop-blur-xl" : "bg-transparent")}>
-        <nav className="container-x flex h-[72px] items-center justify-between gap-6">
-          <Logo className="h-10" />
-          <ul className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/[.04] p-1 backdrop-blur lg:flex">
+        scrolled || open ? "bg-ink-900 shadow-md" : "bg-transparent")}>
+        <nav className="container-x flex h-[88px] items-center justify-between gap-6 lg:h-[112px]">
+          <Logo className="h-16 lg:h-24" />
+          <ul className="hidden items-center bg-ink-900 px-2 lg:flex">
             {links.map((l) => {
               const active = l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
               return (
                 <li key={l.href}>
-                  <Link href={l.href} className={cn("relative block rounded-full px-4 py-2 text-sm transition",
-                    active ? "text-ink-900" : "text-white/75 hover:text-white")}>
-                    {active && <motion.span layoutId="nav-pill" className="absolute inset-0 rounded-full bg-white"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.5 }} />}
-                    <span className="relative">{l.label}</span>
+                  <Link href={l.href} className={cn("block px-4 py-3 text-[15px] font-medium transition-colors",
+                    active ? "text-gold-500" : "text-white hover:text-gold-500")}>
+                    {l.label}
                   </Link>
                 </li>
               );
             })}
           </ul>
           <div className="flex items-center gap-2">
-            <Link href="/report" className="btn-gold hidden sm:inline-flex">
-              Start secure report <ArrowUpRight className="size-4" />
-            </Link>
+            <Link href="/report" className="btn-gold hidden sm:inline-flex">Start secure report</Link>
             <button onClick={() => setOpen((o) => !o)} aria-label="Toggle menu" aria-expanded={open}
               className="grid size-10 place-items-center rounded-full border border-white/15 text-white lg:hidden">
               {open ? <X className="size-5" /> : <Menu className="size-5" />}

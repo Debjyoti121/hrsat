@@ -9,6 +9,7 @@ const files = [
   "2026/08/GHRD-logo-high-resolution-kopie.webp",
   "2026/09/Sital-1.png",
   "2026/09/DSC01679.jpg",
+  "2026/09/DSC05850.jpg",
   "2026/07/DSC1448-scaled.webp",
   "2026/07/DSC07447-scaled.webp",
   "2026/09/WhatsApp-Image-2026-09-10-at-17.48.24.jpeg",

@@ -9,7 +9,7 @@ const ORDER = ["NEW", "IN_REVIEW", "NEEDS_INFO", "VERIFIED"];
 export function TrackForm({ initialCase }: { initialCase: string }) {
   const [state, action, pending] = useActionState<TrackState, FormData>(trackReport, null);
   return (
-    <div className="rounded-[32px] border border-line bg-white p-7 sm:p-10">
+    <div className="rounded-xl border border-line bg-white p-7 sm:p-10">
       <form action={action} className="grid gap-5 sm:grid-cols-2">
         <div><label className="field-label" htmlFor="caseId">Case reference</label>
           <input id="caseId" name="caseId" defaultValue={initialCase} required placeholder="HRS-2026-XXXXXX" className="input font-mono uppercase" /></div>

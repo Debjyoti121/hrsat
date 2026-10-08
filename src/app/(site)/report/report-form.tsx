@@ -135,9 +135,9 @@ export function ReportForm() {
 
   if (done) {
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-2xl rounded-[32px] border border-line bg-white p-8 text-center sm:p-14">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-2xl rounded-xl border border-line bg-white p-8 text-center sm:p-14">
         <div className="mx-auto grid size-16 place-items-center rounded-full bg-emerald-50"><CheckCircle2 className="size-8 text-emerald-600" /></div>
-        <h2 className="display mt-6 text-3xl sm:text-4xl">Your report is <span className="serif-accent text-gold-600">safe with us.</span></h2>
+        <h2 className="display mt-6 text-3xl sm:text-4xl">Your report is safe with us.</h2>
         <p className="mt-3 text-slate-600">We&apos;ve sent a confirmation to your email. Keep your case reference private — you&apos;ll need it to track the status.</p>
         <div className="mx-auto mt-8 flex max-w-sm items-center justify-between gap-3 rounded-2xl border border-dashed border-gold-500/60 bg-gold-500/[.06] p-4">
           <div className="text-left"><div className="text-[11px] uppercase tracking-widest text-slate-500">Case reference</div><div className="font-mono text-xl font-semibold tracking-wider">{done}</div></div>
@@ -161,7 +161,7 @@ export function ReportForm() {
       {/* Stepper */}
       <aside className="lg:col-span-4">
         <div className="sticky top-32 space-y-6">
-          <ol className="hidden space-y-1 rounded-3xl border border-line bg-white p-3 lg:block">
+          <ol className="hidden space-y-1 rounded-xl border border-line bg-white p-3 lg:block">
             {STEPS.map((s, i) => (
               <li key={s.title}>
                 <button type="button" onClick={() => (i < step ? go(i) : i === step + 1 ? go(i) : null)}
@@ -175,7 +175,7 @@ export function ReportForm() {
               </li>
             ))}
           </ol>
-          <div className="rounded-3xl bg-ink-900 p-6 text-white">
+          <div className="rounded-xl bg-ink-900 p-6 text-white">
             <Lock className="size-5 text-gold-400" />
             <p className="mt-4 text-sm leading-relaxed text-white/70">Your submission is encrypted in transit. Evidence files are fingerprinted (SHA-256) and only accessible to the reviewer assigned to your case.</p>
           </div>
@@ -184,7 +184,7 @@ export function ReportForm() {
 
       <form ref={formRef} onSubmit={onSubmit} noValidate className="scroll-mt-32 lg:col-span-8">
         <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
-        <div className="rounded-[32px] border border-line bg-white p-6 sm:p-10">
+        <div className="rounded-xl border border-line bg-white p-6 sm:p-10">
           {/* mobile progress */}
           <div className="mb-8 lg:hidden">
             <div className="flex justify-between text-xs text-slate-500"><span>Step {step + 1} of {STEPS.length}</span><span>{STEPS[step]!.title}</span></div>

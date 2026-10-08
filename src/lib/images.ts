@@ -1,7 +1,7 @@
-// Images originally hosted on hrsat.org. Run `npm run images:download` and set
-// NEXT_PUBLIC_LOCAL_IMAGES="true" to serve them from /public/images instead.
+// Images from hrsat.org, served from /public/images (compressed copies, see `npm run images:download`).
+// Set NEXT_PUBLIC_LOCAL_IMAGES="false" to load them from the old WordPress server instead.
 const REMOTE = "https://www.hrsat.org/wp-content/uploads/";
-const local = process.env.NEXT_PUBLIC_LOCAL_IMAGES === "true";
+const local = process.env.NEXT_PUBLIC_LOCAL_IMAGES !== "false";
 
 export const IMAGE_SOURCES = {
   logo: "2025/06/HRSAT-LOGO.png",
@@ -9,6 +9,7 @@ export const IMAGE_SOURCES = {
   ghrdLogo: "2026/08/GHRD-logo-high-resolution-kopie.webp",
   team: "2026/09/Sital-1.png",
   office: "2026/09/DSC01679.jpg",
+  heroBuilding: "2026/09/DSC05850.jpg",
   conference: "2026/07/DSC1448-scaled.webp",
   aboutHero: "2026/07/DSC07447-scaled.webp",
   aboutIntro: "2026/09/WhatsApp-Image-2026-09-10-at-17.48.24.jpeg",

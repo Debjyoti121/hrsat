@@ -16,7 +16,7 @@ export function Footer() {
       <div className="container-x relative pt-20 pb-10">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-5">
-            <Logo className="h-14" />
+            <Logo className="h-20" />
             <p className="mt-6 max-w-sm text-sm leading-relaxed text-white/60">
               A secure human rights reporting and documentation platform built to help victims, witnesses, defenders,
               journalists and organisations report violations safely and responsibly.
@@ -54,7 +54,6 @@ export function Footer() {
             </div>
           </div>
         </div>
-        <div aria-hidden className="pointer-events-none mt-16 select-none text-center font-semibold leading-none tracking-[-0.06em] text-white/[.04] text-[22vw]">HRSAT</div>
         <div className="mt-6 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/40 sm:flex-row">
           <span>© {new Date().getFullYear()} HRSAT · Human Rights Satellite. All rights reserved.</span>
           <span>Secure · Confidential · Victim-first</span>

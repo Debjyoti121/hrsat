@@ -17,21 +17,21 @@ export default function ContactPage() {
         <div className="container-x grid gap-10 lg:grid-cols-12">
           <div className="space-y-4 lg:col-span-4">
             <Reveal>
-              <div className="rounded-3xl border border-line bg-white p-7">
+              <div className="rounded-xl border border-line bg-white p-7">
                 <Mail className="size-6 text-gold-600" />
                 <h3 className="mt-6 font-semibold">Email</h3>
                 <a href={`mailto:${CONTACT.email}`} className="mt-1 block text-slate-600 hover:text-ink-900">{CONTACT.email}</a>
               </div>
             </Reveal>
             <Reveal delay={0.05}>
-              <div className="rounded-3xl border border-line bg-white p-7">
+              <div className="rounded-xl border border-line bg-white p-7">
                 <MapPin className="size-6 text-gold-600" />
                 <h3 className="mt-6 font-semibold">Office</h3>
                 <p className="mt-1 text-slate-600">{CONTACT.address}</p>
               </div>
             </Reveal>
             <Reveal delay={0.1}>
-              <div className="rounded-3xl bg-ink-900 p-7 text-white">
+              <div className="rounded-xl bg-ink-900 p-7 text-white">
                 <ShieldAlert className="size-6 text-gold-400" />
                 <h3 className="mt-6 font-semibold">Reporting a violation?</h3>
                 <p className="mt-1 text-sm text-white/65">Don&apos;t send sensitive details by email. Our secure form protects your identity and evidence.</p>
@@ -40,7 +40,7 @@ export default function ContactPage() {
             </Reveal>
           </div>
           <Reveal delay={0.1} className="lg:col-span-8">
-            <div className="rounded-[32px] border border-line bg-white p-7 sm:p-10">
+            <div className="rounded-xl border border-line bg-white p-7 sm:p-10">
               <h2 className="text-2xl font-semibold tracking-tight">Send us a message</h2>
               <p className="mt-1 text-slate-600">We usually reply within two working days.</p>
               <ContactForm />

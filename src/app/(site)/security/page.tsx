@@ -33,7 +33,7 @@ export default function SecurityPage() {
                 ["Strict policy compliance", "We follow GDPR and international human rights frameworks on data minimisation and consent."],
               ].map(([t, d], i) => (
                 <Reveal key={t} delay={i * 0.05}>
-                  <div className="flex gap-5 rounded-3xl border border-line bg-white p-6">
+                  <div className="flex gap-5 rounded-xl border border-line bg-white p-6">
                     <span className="grid size-10 shrink-0 place-items-center rounded-full bg-ink-900 font-mono text-sm text-gold-400">{i + 1}</span>
                     <div><h3 className="font-semibold">{t}</h3><p className="mt-1 text-sm leading-relaxed text-slate-600">{d}</p></div>
                   </div>
@@ -42,15 +42,14 @@ export default function SecurityPage() {
             </div>
           </div>
           <Reveal delay={0.1}>
-            <div className="relative h-full min-h-[420px] overflow-hidden rounded-[32px]">
+            <div className="relative h-full min-h-[420px] overflow-hidden rounded-xl">
               <Image src={img("office")} alt="" fill sizes="(min-width:1024px) 50vw, 100vw" className="object-cover" />
             </div>
           </Reveal>
         </div>
       </section>
 
-      <section className="noise relative overflow-hidden bg-ink-900 py-24 text-white sm:py-32">
-        <div className="grid-bg absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
+      <section className="relative overflow-hidden bg-ink-900 py-24 text-white sm:py-32">
         <div className="container-x relative">
           <SectionHeading dark align="center" eyebrow="Integrity" title="Evidence that" accent="can't be silently altered"
             intro="Every uploaded file is fingerprinted with a SHA-256 hash the moment it arrives. Any later change to the file would produce a different fingerprint — creating a verifiable trail of evidence, ready to be anchored to a blockchain ledger." />
@@ -61,7 +60,7 @@ export default function SecurityPage() {
               const Icon = I as typeof Lock;
               return (
                 <Reveal key={t as string} delay={i * 0.06}>
-                  <div className="h-full rounded-3xl border border-white/10 bg-white/[.04] p-7">
+                  <div className="h-full rounded-xl border border-white/10 bg-white/[.04] p-7">
                     <Icon className="size-7 text-gold-400" />
                     <h3 className="mt-8 text-lg font-semibold">{t as string}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-white/60">{d as string}</p>
@@ -88,7 +87,7 @@ export default function SecurityPage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:col-span-7">
             {protections.map((p, i) => (
               <Reveal key={p.title} delay={i * 0.05}>
-                <div className="h-full rounded-3xl border border-line bg-white p-7">
+                <div className="h-full rounded-xl border border-line bg-white p-7">
                   <p.icon className="size-6 text-ink-700" />
                   <h3 className="mt-8 font-semibold">{p.title}</h3>
                   <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{p.text}</p>
@@ -101,7 +100,7 @@ export default function SecurityPage() {
 
       <section className="pb-24 sm:pb-32">
         <div className="container-x">
-          <div className="rounded-[32px] border border-gold-500/30 bg-gold-500/[.07] p-8 sm:p-12">
+          <div className="rounded-xl border border-gold-500/30 bg-gold-500/[.07] p-8 sm:p-12">
             <h2 className="text-2xl font-semibold tracking-tight">Staying safe while you report</h2>
             <ul className="mt-6 grid gap-3 text-[15px] text-slate-700 sm:grid-cols-2">
               <li>• Use a private browsing window and a device you trust.</li>

@@ -11,13 +11,12 @@
     "setup:demo": "node scripts/setup-db.mjs --demo"
   },
   "dependencies": {
-    "@fontsource/instrument-serif": "^5.2.8",
     "@libsql/client": "0.15.15",
     "@vercel/blob": "^2.8.1",
     "bcryptjs": "3.0.3",
     "clsx": "2.1.1",
     "drizzle-orm": "0.44.7",
-    "geist": "^1.5.1",
+    "geist": "^1.7.2",
     "jose": "6.2.12",
     "lucide-react": "0.577.0",
     "motion": "12.43.0",

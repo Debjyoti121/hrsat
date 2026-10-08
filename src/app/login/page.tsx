@@ -11,13 +11,12 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const { next } = await searchParams;
   return (
     <div className="grid min-h-dvh lg:grid-cols-2">
-      <div className="noise relative hidden overflow-hidden bg-ink-900 p-12 text-white lg:flex lg:flex-col lg:justify-between">
+      <div className="relative hidden overflow-hidden bg-ink-900 p-12 text-white lg:flex lg:flex-col lg:justify-between">
         <Image src={img("conference")} alt="" fill className="object-cover opacity-20" sizes="50vw" />
         <div className="absolute inset-0 bg-gradient-to-br from-ink-900/70 to-ink-950" />
-        <div className="grid-bg absolute inset-0 [mask-image:radial-gradient(ellipse_at_bottom_left,black,transparent_70%)]" />
         <Link href="/" className="relative"><Image src={img("logo")} alt="HRSAT" width={180} height={120} className="h-14 w-auto" /></Link>
         <div className="relative max-w-md">
-          <h1 className="display text-5xl leading-[1.02]">Case review, <span className="serif-accent text-gold-400">done with care.</span></h1>
+          <h1 className="display text-5xl leading-[1.02]">Case review, done with care.</h1>
           <p className="mt-5 text-white/65">The HRSAT dashboard is restricted to authorised documentation teams. All access is logged.</p>
         </div>
         <div className="relative flex items-center gap-2 text-sm text-white/50"><ShieldCheck className="size-4 text-gold-500" /> Signed sessions · role-based access · audit trail</div>
