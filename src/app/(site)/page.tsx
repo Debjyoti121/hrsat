@@ -61,7 +61,7 @@ export default function Home() {
         <div className="absolute inset-0 -z-10 bg-ink-900/85 lg:bg-transparent lg:bg-[linear-gradient(90deg,#161d3d_0%,rgba(33,43,84,.94)_38%,rgba(33,43,84,.55)_68%,rgba(33,43,84,.25)_100%)]" />
         <div className="absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-ink-950/90 to-transparent" />
 
-        <div className="container-x flex flex-1 items-center pt-40 pb-16 sm:pt-44">
+        <div className="container-x flex flex-1 items-center pt-32 pb-16 sm:pt-36">
           <div className="max-w-2xl">
             <Reveal>
               <p className="flex items-center gap-3 text-sm font-semibold text-gold-500">

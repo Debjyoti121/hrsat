@@ -6,7 +6,7 @@ export function PageHero({ eyebrow, title, accent, intro, image, children }: {
   eyebrow: string; title: string; accent?: string; intro?: string; image?: string; children?: React.ReactNode;
 }) {
   return (
-    <section aria-label={eyebrow} className="relative overflow-hidden bg-ink-900 pt-44 pb-24 text-white sm:pt-52 sm:pb-28">
+    <section aria-label={eyebrow} className="relative overflow-hidden bg-ink-900 pt-36 pb-24 text-white sm:pt-44 sm:pb-28">
       {image && (
         <Image src={image} alt="" fill priority sizes="100vw" className="object-cover" />
       )}

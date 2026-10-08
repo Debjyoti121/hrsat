@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, Lock, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
 import { Logo } from "./logo";
 import { QuickExit } from "./quick-exit";
 import { cn } from "@/lib/utils";
@@ -33,14 +33,6 @@ export function Navbar() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      <div className="hidden bg-ink-950 text-white/70 sm:block">
-        <div className="container-x flex h-9 items-center justify-between text-xs">
-          <span className="inline-flex items-center gap-2">
-            <Lock className="size-3.5 text-gold-500" /> Encrypted submissions · Anonymous reporting available
-          </span>
-          <QuickExit />
-        </div>
-      </div>
       <div className={cn("border-b transition-colors duration-300",
         solid ? "border-transparent bg-ink-900 shadow-[0_8px_24px_-12px_rgba(0,0,0,.45)]" : "border-white/10 bg-transparent")}>
         <nav className="container-x flex h-20 items-center gap-8 lg:h-[92px]">
@@ -60,6 +52,7 @@ export function Navbar() {
             })}
           </ul>
           <div className="ml-auto flex items-center gap-2 lg:ml-4">
+            <QuickExit />
             <Link href="/report" className="btn-gold hidden px-5 py-3 sm:inline-flex">
               Report a violation <ArrowRight className="size-4" />
             </Link>
@@ -77,7 +70,7 @@ export function Navbar() {
                 {[...links, { href: "/report", label: "Report a violation" }].map((l) => (
                   <Link key={l.href} href={l.href} className="border-b border-white/10 py-3.5 text-lg font-medium text-white/90 last:border-0">{l.label}</Link>
                 ))}
-                <div className="mt-4 flex items-center gap-3 pb-3"><QuickExit /><span className="text-xs text-white/50">or press Esc twice</span></div>
+                <p className="mt-4 pb-3 text-xs text-white/50">Tip: press Esc twice to leave this site instantly.</p>
               </div>
             </motion.div>
           )}
