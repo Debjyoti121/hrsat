@@ -50,51 +50,73 @@ const security = [
   ["Strict policy compliance", "GDPR-aligned data minimisation and consent, following international human rights frameworks."],
 ];
 
-const card = "rounded-xl bg-white shadow-[0_1px_3px_rgba(33,43,84,.08)]";
-
 export default function Home() {
   return (
     <>
       {/* ───────────── HERO ───────────── */}
-      <section className="relative overflow-hidden bg-ink-900 text-white">
-        <Image src={img("heroBuilding")} alt="" fill priority sizes="100vw" className="object-cover" />
-        <div className="absolute inset-0 bg-ink-900/80" />
-        <div className="container-x relative pt-48 pb-28 text-center sm:pt-56 sm:pb-32">
-          <Reveal>
-            <h1 className="display mx-auto max-w-4xl text-[38px] leading-[1.1] font-semibold sm:text-[50px]">
-              Report Human Rights Violations Safely, Securely, and With Dignity
-            </h1>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <p className="mx-auto mt-8 max-w-3xl text-lg leading-[1.45] text-white/90">
-              HRSAT (Human Rights Satellite) is an innovative digital platform designed to document, monitor, and report
-              human rights violations worldwide. Through secure reporting tools, data collection, and case management
-              systems, HRSAT empowers victims, activists, journalists, legal professionals, and human rights defenders to
-              bring attention to violations and support accountability.
-            </p>
-          </Reveal>
-          <Reveal delay={0.16}>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <Link href="/report" className="btn-gold px-9 py-4 text-[15px]">Submit a Secure Report</Link>
-              <Link href="#how-it-works" className="btn-ghost-light px-7 py-4 text-[15px]">How it works</Link>
+      <section className="relative isolate flex min-h-[760px] flex-col overflow-hidden bg-ink-900 text-white lg:min-h-[min(100svh,880px)]">
+        <Image src={img("heroBuilding")} alt="" fill priority sizes="100vw" className="-z-10 object-cover object-[70%_center]" />
+        {/* navy behind the copy, photo left visible on the right */}
+        <div className="absolute inset-0 -z-10 bg-ink-900/85 lg:bg-transparent lg:bg-[linear-gradient(90deg,#161d3d_0%,rgba(33,43,84,.94)_38%,rgba(33,43,84,.55)_68%,rgba(33,43,84,.25)_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-ink-950/90 to-transparent" />
+
+        <div className="container-x flex flex-1 items-center pt-40 pb-16 sm:pt-44">
+          <div className="max-w-2xl">
+            <Reveal>
+              <p className="flex items-center gap-3 text-sm font-semibold text-gold-500">
+                <span className="h-px w-8 bg-gold-500" /> Human Rights Satellite
+              </p>
+              <h1 className="display mt-5 text-[40px] leading-[1.06] sm:text-[56px] lg:text-[64px]">
+                Report human rights violations safely and with dignity.
+              </h1>
+            </Reveal>
+            <Reveal delay={0.08}>
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/80 sm:text-xl">
+                A secure way for victims, witnesses and defenders to document abuse — anonymously if you choose.
+              </p>
+            </Reveal>
+            <Reveal delay={0.16}>
+              <div className="mt-10 flex flex-wrap items-center gap-3">
+                <Link href="/report" className="btn-gold px-7 py-4 text-base">Submit a secure report <ArrowRight className="size-4" /></Link>
+                <Link href="/track" className="btn bg-white px-7 py-4 text-base text-ink-900 hover:bg-paper-2">Track a report</Link>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+
+        {/* trust strip */}
+        <div className="relative border-t border-white/15">
+          <div className="container-x grid gap-6 py-7 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-white/15">
+            {([
+              [EyeOff, "Anonymous reporting", "No name or account needed"],
+              [Lock, "Encrypted evidence", "Files fingerprinted on arrival"],
+              [ScanEye, "Confidential review", "Only assigned reviewers"],
+            ] as const).map(([I, t, d]) => (
+              <div key={t} className="flex items-start gap-3.5 lg:px-8 lg:first:pl-0">
+                <I className="mt-0.5 size-5 shrink-0 text-gold-500" />
+                <div><div className="font-heading font-semibold">{t}</div><div className="text-sm text-white/65">{d}</div></div>
+              </div>
+            ))}
+            <div className="flex items-center gap-3.5 lg:px-8">
+              <Image src={img("ghrdLogo")} alt="" width={48} height={84} className="h-14 w-auto" />
+              <div><div className="text-xs text-white/60">Powered by</div><div className="font-heading font-semibold">Global Human Rights Defence</div></div>
             </div>
-            <p className="mt-6 text-[13px] text-white/75">Anonymous option available · Secure evidence upload · Confidential review</p>
-          </Reveal>
+          </div>
         </div>
       </section>
 
       {/* ───────────── FEATURES ───────────── */}
-      <section className="bg-paper-2 py-20 sm:py-28">
+      <section className="py-20 sm:py-28">
         <div className="container-x">
-          <SectionHeading align="center" title="Built for Safe and Confidential Reporting"
+          <SectionHeading align="split" title="Built for safe and confidential reporting"
             intro="Reporting a violation can put people at risk. Every part of HRSAT is designed to protect the person speaking up." />
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-14 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((f, i) => (
               <Reveal key={f.title} delay={(i % 3) * 0.05}>
-                <div className={`${card} h-full p-7`}>
-                  <div className="grid size-12 place-items-center rounded-full bg-gold-500 text-white"><f.icon className="size-5" /></div>
-                  <h3 className="mt-6 text-xl font-bold text-ink-900">{f.title}</h3>
-                  <p className="mt-2 text-[17px] leading-snug text-slate-700">{f.text}</p>
+                <div className="h-full border-t border-line py-8">
+                  <f.icon className="size-6 text-gold-600" strokeWidth={1.75} />
+                  <h3 className="mt-5 text-xl font-bold text-ink-900">{f.title}</h3>
+                  <p className="mt-2 text-base leading-relaxed text-body">{f.text}</p>
                 </div>
               </Reveal>
             ))}
@@ -131,26 +153,28 @@ export default function Home() {
       {/* ───────────── HOW IT WORKS ───────────── */}
       <section id="how-it-works" className="scroll-mt-28 bg-paper-2 py-20 sm:py-28">
         <div className="container-x">
-          <SectionHeading align="center" title="How Reporting Works" />
-          <div className="mt-14 grid gap-6 md:grid-cols-4">
+          <SectionHeading align="split" title="How reporting works"
+            intro="Four steps from your first submission to documentation that can support advocacy and accountability." />
+          <ol className="relative mt-16 grid gap-10 md:grid-cols-4 md:gap-8">
+            <span aria-hidden className="absolute top-6 right-0 left-6 hidden h-px bg-ink-900/15 md:block" />
             {steps.map((s, i) => (
-              <Reveal key={s.title} delay={i * 0.06}>
-                <div className={`${card} h-full p-7 text-center`}>
-                  <div className="mx-auto grid size-14 place-items-center rounded-full bg-ink-900 font-heading text-lg font-bold text-gold-500">{i + 1}</div>
-                  <h3 className="mt-5 text-lg font-bold text-ink-900">{s.title}</h3>
-                  <p className="mx-auto mt-2 max-w-[240px] text-[15px] leading-relaxed text-body">{s.text}</p>
-                </div>
-              </Reveal>
+              <li key={s.title} className="relative">
+                <Reveal delay={i * 0.06}>
+                  <div className="grid size-12 place-items-center rounded-full bg-ink-900 font-heading text-base font-bold text-gold-500 ring-8 ring-paper-2">{i + 1}</div>
+                  <h3 className="mt-6 text-lg font-bold text-ink-900">{s.title}</h3>
+                  <p className="mt-2 text-[15px] leading-relaxed text-body">{s.text}</p>
+                </Reveal>
+              </li>
             ))}
-          </div>
-          <Reveal className="mt-12 text-center"><Link href="/report" className="btn-gold px-9 py-4 text-[15px]">Start Secure Report</Link></Reveal>
+          </ol>
+          <Reveal className="mt-14"><Link href="/report" className="btn-gold px-7 py-4 text-base">Start your report <ArrowRight className="size-4" /></Link></Reveal>
         </div>
       </section>
 
       {/* ───────────── AREAS ───────────── */}
       <section className="py-20 sm:py-28">
         <div className="container-x">
-          <SectionHeading align="center" title="Human Rights Violations We Help Document"
+          <SectionHeading align="split" title="Human rights violations we help document"
             intro="Accessible technology that documents evidence, tracks incidents and connects affected people with advocacy and legal support networks." />
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {areas.map((a, i) => (
@@ -170,7 +194,7 @@ export default function Home() {
       <section className="bg-ink-900 py-20 text-white sm:py-28">
         <div className="container-x grid gap-14 lg:grid-cols-2">
           <div>
-            <SectionHeading dark title="Your Security. Your Privacy. Your Voice."
+            <SectionHeading dark title="Your security. Your privacy. Your voice."
               intro="Reporting often involves sensitive information that can place victims, witnesses and defenders at risk. We protect it accordingly." />
             <div className="mt-10 space-y-3">
               {security.map(([t, d], i) => (
@@ -207,7 +231,7 @@ export default function Home() {
       {/* ───────────── AUDIENCES ───────────── */}
       <section className="py-20 sm:py-28">
         <div className="container-x">
-          <SectionHeading align="center" title="Who Can Use HRSAT?" />
+          <SectionHeading align="split" title="Who can use HRSAT?" intro="Anyone with knowledge of a human rights violation can submit a report — directly affected or not." />
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {audiences.map((a, i) => (
               <Reveal key={a.title} delay={(i % 3) * 0.05}>
@@ -225,11 +249,11 @@ export default function Home() {
       <section className="bg-paper-2 py-20 sm:py-24">
         <div className="container-x">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <h2 className="display text-[34px] leading-[1.12] text-ink-600 sm:text-[42px]">Document What Happened. Preserve What Matters.</h2>
+            <h2 className="display text-[34px] leading-[1.12] text-ink-600 sm:text-[42px]">Document what happened. Preserve what matters.</h2>
             <p className="mt-5 text-lg text-body">Violations are often hidden by fear, silence and lack of safe reporting access. Your report can change that — and you can stay anonymous.</p>
             <div className="mt-9 flex flex-wrap justify-center gap-3">
-              <Link href="/report" className="btn-gold px-9 py-4 text-[15px]">Submit a Secure Report</Link>
-              <Link href="/contact" className="btn-ghost px-7 py-4 text-[15px]">Contact Us</Link>
+              <Link href="/report" className="btn-gold px-7 py-4 text-base">Submit a secure report <ArrowRight className="size-4" /></Link>
+              <Link href="/contact" className="btn-ghost px-7 py-4 text-base">Contact us</Link>
             </div>
           </Reveal>
         </div>

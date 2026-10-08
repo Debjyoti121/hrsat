@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Menu, ShieldCheck, X } from "lucide-react";
+import { ArrowRight, Lock, Menu, X } from "lucide-react";
 import { Logo } from "./logo";
 import { QuickExit } from "./quick-exit";
 import { cn } from "@/lib/utils";
@@ -29,37 +29,42 @@ export function Navbar() {
   }, []);
   useEffect(() => setOpen(false), [pathname]);
 
+  const solid = scrolled || open;
+
   return (
     <header className="fixed inset-x-0 top-0 z-50">
       <div className="hidden bg-ink-950 text-white/70 sm:block">
         <div className="container-x flex h-9 items-center justify-between text-xs">
           <span className="inline-flex items-center gap-2">
-            <ShieldCheck className="size-3.5 text-gold-500" /> Encrypted submissions · Anonymous reporting available
+            <Lock className="size-3.5 text-gold-500" /> Encrypted submissions · Anonymous reporting available
           </span>
           <QuickExit />
         </div>
       </div>
-      <div className={cn("transition-all duration-300",
-        scrolled || open ? "bg-ink-900 shadow-md" : "bg-transparent")}>
-        <nav className="container-x flex h-[88px] items-center justify-between gap-6 lg:h-[112px]">
-          <Logo className="h-16 lg:h-24" />
-          <ul className="hidden items-center bg-ink-900 px-2 lg:flex">
+      <div className={cn("border-b transition-colors duration-300",
+        solid ? "border-transparent bg-ink-900 shadow-[0_8px_24px_-12px_rgba(0,0,0,.45)]" : "border-white/10 bg-transparent")}>
+        <nav className="container-x flex h-20 items-center gap-8 lg:h-[92px]">
+          <Logo className="h-14 lg:h-[68px]" />
+          <ul className="ml-auto hidden h-full items-stretch gap-1 lg:flex">
             {links.map((l) => {
               const active = l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
               return (
-                <li key={l.href}>
-                  <Link href={l.href} className={cn("block px-4 py-3 text-[15px] font-medium transition-colors",
-                    active ? "text-gold-500" : "text-white hover:text-gold-500")}>
+                <li key={l.href} className="relative flex">
+                  <Link href={l.href} className={cn("flex items-center px-3.5 text-[15px] font-medium transition-colors",
+                    active ? "text-white" : "text-white/75 hover:text-white")}>
                     {l.label}
                   </Link>
+                  {active && <span className="absolute inset-x-3.5 bottom-0 h-[3px] rounded-t bg-gold-500" />}
                 </li>
               );
             })}
           </ul>
-          <div className="flex items-center gap-2">
-            <Link href="/report" className="btn-gold hidden sm:inline-flex">Start secure report</Link>
+          <div className="ml-auto flex items-center gap-2 lg:ml-4">
+            <Link href="/report" className="btn-gold hidden px-5 py-3 sm:inline-flex">
+              Report a violation <ArrowRight className="size-4" />
+            </Link>
             <button onClick={() => setOpen((o) => !o)} aria-label="Toggle menu" aria-expanded={open}
-              className="grid size-10 place-items-center rounded-full border border-white/15 text-white lg:hidden">
+              className="grid size-11 place-items-center rounded-full border border-white/20 text-white lg:hidden">
               {open ? <X className="size-5" /> : <Menu className="size-5" />}
             </button>
           </div>
@@ -67,12 +72,12 @@ export function Navbar() {
         <AnimatePresence>
           {open && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden lg:hidden">
-              <div className="container-x flex flex-col gap-1 pb-6">
+              className="overflow-hidden border-t border-white/10 lg:hidden">
+              <div className="container-x flex flex-col py-3">
                 {[...links, { href: "/report", label: "Report a violation" }].map((l) => (
-                  <Link key={l.href} href={l.href} className="rounded-xl px-3 py-3 text-lg text-white/90 hover:bg-white/5">{l.label}</Link>
+                  <Link key={l.href} href={l.href} className="border-b border-white/10 py-3.5 text-lg font-medium text-white/90 last:border-0">{l.label}</Link>
                 ))}
-                <div className="mt-3 flex items-center gap-3"><QuickExit /><span className="text-xs text-white/50">or press Esc twice</span></div>
+                <div className="mt-4 flex items-center gap-3 pb-3"><QuickExit /><span className="text-xs text-white/50">or press Esc twice</span></div>
               </div>
             </motion.div>
           )}

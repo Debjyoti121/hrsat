@@ -25,8 +25,17 @@ export function PageHero({ eyebrow, title, accent, intro, image, children }: {
 }
 
 export function SectionHeading({ title, accent, intro, align = "left", dark = false }: {
-  eyebrow?: string; title: string; accent?: string; intro?: string; align?: "left" | "center"; dark?: boolean;
+  eyebrow?: string; title: string; accent?: string; intro?: string; align?: "left" | "center" | "split"; dark?: boolean;
 }) {
+  if (align === "split")
+    return (
+      <Reveal className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-10">
+        <h2 className={`display text-[34px] leading-[1.1] sm:text-[44px] lg:col-span-6 ${dark ? "text-white" : "text-ink-900"}`}>
+          {title}{accent && <> {accent}</>}
+        </h2>
+        {intro && <p className={`text-lg leading-relaxed lg:col-span-5 lg:col-start-8 ${dark ? "text-white/75" : "text-body"}`}>{intro}</p>}
+      </Reveal>
+    );
   return (
     <Reveal className={align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}>
       <h2 className={`display text-[34px] leading-[1.12] sm:text-[44px] ${dark ? "text-white" : "text-ink-900"}`}>
