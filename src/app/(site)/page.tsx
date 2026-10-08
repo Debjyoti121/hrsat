@@ -313,7 +313,7 @@ export default function Home() {
                   <Link href="/report" className="btn-gold px-7 py-4 text-base">Submit a secure report <ArrowRight className="size-4" /></Link>
                   <Link href="/contact" className="btn-ghost-light px-7 py-4 text-base">Contact us</Link>
                 </div>
-                <p className="mt-8 flex items-center gap-2 text-sm text-white/60"><LogOut className="size-4" /> Need to leave quickly? Use Quick exit or press Esc twice.</p>
+                <p className="mt-8 flex items-center gap-2 text-sm text-white/60"><LogOut className="size-4" /> Need to leave quickly? Press Esc twice to exit this site instantly.</p>
               </div>
             </div>
           </Reveal>

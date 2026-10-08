@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { Logo } from "./logo";
-import { QuickExit } from "./quick-exit";
+import { QuickExitShortcut } from "./quick-exit";
 import { cn } from "@/lib/utils";
 
 const links = [
@@ -33,6 +33,7 @@ export function Navbar() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
+      <QuickExitShortcut />
       <div className={cn("border-b transition-colors duration-300",
         solid ? "border-transparent bg-ink-900 shadow-[0_8px_24px_-12px_rgba(0,0,0,.45)]" : "border-white/10 bg-transparent")}>
         <nav className="container-x flex h-20 items-center gap-8 lg:h-[92px]">
@@ -52,7 +53,6 @@ export function Navbar() {
             })}
           </ul>
           <div className="ml-auto flex items-center gap-2 lg:ml-4">
-            <QuickExit />
             <Link href="/report" className="btn-gold hidden px-5 py-3 sm:inline-flex">
               Report a violation <ArrowRight className="size-4" />
             </Link>

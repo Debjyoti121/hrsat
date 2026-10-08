@@ -9,7 +9,7 @@ plus a full **case-management dashboard**.
 - `/` Home · `/about` · `/security` · `/contact` (contact form) · `/track` (status lookup)
 - `/report` — 6-step secure report wizard (all original hrsat.org fields), anonymous mode,
   drag-and-drop evidence upload (4 files × 25 MB), related links, witness section, declarations
-- **Quick exit** button (and pressing `Esc` twice) to leave the site instantly — a standard safety feature for reporting sites
+- **Quick exit**: pressing `Esc` twice leaves the site instantly — a standard safety feature for reporting sites
 - Old WordPress URLs (`/report-violation`, `/about-me`, `/contact-us`, `/security-and-privacy`) redirect automatically
 
 **When someone submits the report form**

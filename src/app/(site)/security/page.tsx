@@ -104,7 +104,7 @@ export default function SecurityPage() {
             <h2 className="text-2xl font-semibold tracking-tight">Staying safe while you report</h2>
             <ul className="mt-6 grid gap-3 text-[15px] text-slate-700 sm:grid-cols-2">
               <li>• Use a private browsing window and a device you trust.</li>
-              <li>• Press <kbd className="rounded border border-line bg-white px-1.5 text-xs">Esc</kbd> twice — or use “Quick exit” — to leave instantly.</li>
+              <li>• Press <kbd className="rounded border border-line bg-white px-1.5 text-xs">Esc</kbd> twice to leave this site instantly.</li>
               <li>• Use an email address that others cannot access.</li>
               <li>• Remove names of at-risk people if sharing them could endanger them.</li>
             </ul>
