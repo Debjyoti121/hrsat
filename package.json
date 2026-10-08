@@ -1,0 +1,44 @@
+{
+  "name": "hrsat",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "setup": "node scripts/setup-db.mjs",
+    "images:download": "node scripts/download-images.mjs",
+    "setup:demo": "node scripts/setup-db.mjs --demo"
+  },
+  "dependencies": {
+    "@fontsource/instrument-serif": "^5.2.8",
+    "@libsql/client": "0.15.15",
+    "@vercel/blob": "^2.8.1",
+    "bcryptjs": "3.0.3",
+    "clsx": "2.1.1",
+    "drizzle-orm": "0.44.7",
+    "geist": "^1.5.1",
+    "jose": "6.2.12",
+    "lucide-react": "0.577.0",
+    "motion": "12.43.0",
+    "next": "15.5.27",
+    "nodemailer": "7.0.13",
+    "react": "19.1.9",
+    "react-dom": "19.1.9",
+    "server-only": "^0.0.1",
+    "sonner": "2.0.8",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.18",
+    "@types/node": "22.18.0",
+    "@types/nodemailer": "7.0.2",
+    "@types/react": "19.1.17",
+    "@types/react-dom": "19.1.11",
+    "tailwindcss": "4.1.18",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=18.18"
+  }
+}
