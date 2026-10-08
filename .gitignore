@@ -8,8 +8,10 @@ out
 /storage
 next-env.d.ts
 *.tsbuildinfo
-!seed/hrsat.db
 
 .vercel
 .env*
 !.env.example
+.agents/
+.claude/
+skills-lock.json

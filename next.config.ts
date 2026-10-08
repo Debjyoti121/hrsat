@@ -2,8 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: __dirname,
-  // starter database copied to /tmp on Vercel previews (see src/lib/db/index.ts)
-  outputFileTracingIncludes: { "/**": ["./seed/hrsat.db"] },
   serverExternalPackages: ["@libsql/client", "libsql"],
   images: {
     remotePatterns: [{ protocol: "https", hostname: "www.hrsat.org", pathname: "/wp-content/uploads/**" }],
