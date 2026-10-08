@@ -180,11 +180,9 @@ export default function Home() {
             {steps.map((s, i) => (
               <li key={s.title} className="relative">
                 <Reveal delay={i * 0.07}>
-                  <div className="flex items-center gap-3">
-                    <div className="grid size-14 place-items-center rounded-full bg-ink-900 text-gold-500 ring-8 ring-white"><s.icon className="size-6" strokeWidth={1.75} /></div>
-                    <span className="font-heading text-sm font-bold text-gold-600">Step {i + 1}</span>
-                  </div>
-                  <h3 className="mt-6 text-xl font-bold text-ink-900">{s.title}</h3>
+                  <div className="grid size-14 place-items-center rounded-full bg-ink-900 text-gold-500 ring-8 ring-white"><s.icon className="size-6" strokeWidth={1.75} /></div>
+                  <p className="mt-6 font-heading text-sm font-bold text-gold-600">Step {i + 1}</p>
+                  <h3 className="mt-1 text-xl font-bold text-ink-900">{s.title}</h3>
                   <p className="mt-2.5 text-[15px] leading-relaxed text-body">{s.text}</p>
                 </Reveal>
               </li>
