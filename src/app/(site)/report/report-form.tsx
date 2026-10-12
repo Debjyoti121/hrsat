@@ -8,6 +8,7 @@ import {
 import { toast } from "sonner";
 import { COUNTRIES, GENDERS, MAX_EVIDENCE_BYTES, MAX_EVIDENCE_FILES, RELATIONSHIPS, TERMS_OF_USE, VIOLATION_TYPES, YES_NO_UNKNOWN } from "@/lib/constants";
 import { PoweredBy } from "@/components/site/powered-by";
+import { Captcha } from "@/components/site/captcha";
 import { cn, formatBytes } from "@/lib/utils";
 
 const STEPS = [
@@ -118,8 +119,9 @@ export function ReportForm() {
     e.preventDefault();
     if (step < STEPS.length - 1) return go(step + 1);
     for (let i = 0; i < STEPS.length; i++) if (!validateStep(i)) { setStep(i); return; }
-    setSubmitting(true);
     const fd = new FormData(e.currentTarget);
+    if (!fd.get("altcha")) { toast.error("Please complete the security check (“I'm not a robot”) before submitting."); return; }
+    setSubmitting(true);
     fd.delete("evidence");
     try {
       if (files.length) await attachEvidence(fd);
@@ -377,6 +379,11 @@ export function ReportForm() {
                 <input type="checkbox" name="consentTerms" required className="mt-0.5 size-4 accent-[#e7a33e]" />
                 <span>I have read and agree to the <a href="/terms" target="_blank" rel="noreferrer" className="font-medium text-ink-900 underline underline-offset-4">Terms of Use &amp; Disclaimer</a>.</span>
               </label>
+              <div>
+                <p className="field-label">Security check <span className="text-gold-600">*</span></p>
+                <Captcha />
+                <p className="field-hint">Helps us block automated spam. No tracking or personal data is involved.</p>
+              </div>
             </fieldset>
           </div>
 

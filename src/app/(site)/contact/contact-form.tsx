@@ -2,14 +2,16 @@
 import { useState } from "react";
 import { CheckCircle2, Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
+import { Captcha } from "@/components/site/captcha";
 
 export function ContactForm() {
   const [state, setState] = useState<"idle" | "loading" | "done">("idle");
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setState("loading");
     const data = Object.fromEntries(new FormData(e.currentTarget));
+    if (!data.altcha) { toast.error("Please complete the security check (“I'm not a robot”)."); return; }
+    setState("loading");
     const res = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
     const json = await res.json().catch(() => ({}));
     if (!res.ok) { toast.error(json.error || "Something went wrong. Please try again."); setState("idle"); return; }
@@ -37,6 +39,7 @@ export function ContactForm() {
         </select>
       </div>
       <div className="sm:col-span-2"><label className="field-label" htmlFor="body">Message</label><textarea id="body" name="body" required rows={6} className="input resize-y" /></div>
+      <Captcha className="sm:col-span-2" />
       <div className="sm:col-span-2 flex items-center justify-between gap-4">
         <p className="text-xs text-slate-500">By sending, you agree we may store your message to reply to you.</p>
         <button disabled={state === "loading"} className="btn-ink px-6 py-3">

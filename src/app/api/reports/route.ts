@@ -8,6 +8,7 @@ import { caseId as makeCaseId } from "@/lib/utils";
 import { mail } from "@/lib/mail";
 import { notify } from "@/lib/notify";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { verifyCaptcha } from "@/lib/captcha";
 import { deleteEvidence, readEvidence, saveEvidence, UPLOAD_PATH } from "@/lib/storage";
 
 export const runtime = "nodejs";
@@ -42,6 +43,8 @@ export async function POST(req: Request) {
   let form: FormData;
   try { form = await req.formData(); } catch { return NextResponse.json({ error: "Invalid submission." }, { status: 400 }); }
   if (form.get("website")) return NextResponse.json({ ok: true, caseId: "HRS-0000-000000" }); // honeypot
+  if (!(await verifyCaptcha(form.get("altcha"))))
+    return NextResponse.json({ error: "The security check failed or expired. Please tick “I'm not a robot” again." }, { status: 400 });
 
   const raw: Record<string, string> = {};
   for (const [k, v] of form.entries()) if (typeof v === "string") raw[k] = v;
