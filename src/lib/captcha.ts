@@ -1,30 +1,23 @@
 import "server-only";
-import { CappedMap, create } from "altcha-lib/frameworks/nextjs";
-import { deriveKey } from "altcha-lib/algorithms/pbkdf2";
 
-// ALTCHA: a self-hosted, privacy-friendly proof-of-work captcha. No third-party service,
-// cookies or tracking — the visitor's browser solves a small puzzle, the server checks it.
-const secret = process.env.ALTCHA_HMAC_SECRET || process.env.AUTH_SECRET || "dev-only-altcha-secret";
+// Cloudflare Turnstile. Without real keys the official test secret is used, which accepts
+// every token — set TURNSTILE_SECRET_KEY (and NEXT_PUBLIC_TURNSTILE_SITE_KEY) for real protection.
+const TEST_SECRET = "1x0000000000000000000000000000000AA";
+const secret = process.env.TURNSTILE_SECRET_KEY || TEST_SECRET;
 
-// Remembers solved challenges so a payload can't be replayed (per server instance).
-const store = new CappedMap<string, boolean>({ maxSize: 10_000 });
+/** Name of the hidden field Turnstile adds to the form. */
+export const CAPTCHA_FIELD = "cf-turnstile-response";
 
-const altcha = create({
-  deriveKey,
-  hmacSignatureSecret: secret,
-  store,
-  createChallengeParameters: () => ({
-    algorithm: "PBKDF2/SHA-256",
-    cost: 2_000,
-    expiresAt: new Date(Date.now() + 30 * 60_000),
-  }),
-});
-
-export const captchaChallenge = altcha.challengeHandler;
-
-/** True when the `altcha` form field carries a valid, unexpired, unused solution. */
-export async function verifyCaptcha(payload: FormDataEntryValue | null) {
-  if (typeof payload !== "string" || !payload) return false;
-  const { error } = await altcha.verify(payload, deriveKey, secret, undefined, store);
-  return !error;
+/** Verifies a Turnstile token with Cloudflare (tokens are single-use and valid for 5 minutes). */
+export async function verifyCaptcha(token: FormDataEntryValue | null | undefined, ip?: string) {
+  if (typeof token !== "string" || !token || token.length > 2048) return false;
+  const body = new URLSearchParams({ secret, response: token });
+  if (ip && ip !== "local") body.set("remoteip", ip);
+  try {
+    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body, cache: "no-store" });
+    const data = (await res.json()) as { success?: boolean };
+    return data.success === true;
+  } catch {
+    return false;
+  }
 }

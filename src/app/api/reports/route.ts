@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { getDictionary } from "@/i18n/server";
+import { fill } from "@/i18n/config";
 import { createHash, randomUUID } from "node:crypto";
 import { inArray } from "drizzle-orm";
 import { z } from "zod";
@@ -8,7 +10,7 @@ import { caseId as makeCaseId } from "@/lib/utils";
 import { mail } from "@/lib/mail";
 import { notify } from "@/lib/notify";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { verifyCaptcha } from "@/lib/captcha";
+import { CAPTCHA_FIELD, verifyCaptcha } from "@/lib/captcha";
 import { deleteEvidence, readEvidence, saveEvidence, UPLOAD_PATH } from "@/lib/storage";
 
 export const runtime = "nodejs";
@@ -29,29 +31,32 @@ const schema = z.object({
   victimContact: opt, relationship: opt,
   violationType: z.enum(VIOLATION_TYPES),
   incidentDate: opt, incidentTime: opt, incidentCity: opt, incidentState: opt, incidentPostal: opt, incidentCountry: opt,
-  description: z.string().trim().min(20, "Please describe what happened (at least 20 characters).").max(20000),
+  description: z.string().trim().min(20).max(20000),
   involved: opt, authoritiesInvolved: opt, authoritiesDetail: opt, reportedBefore: opt, reportedBeforeDetail: opt,
   hasWitnesses: opt, witnessName: opt, witnessContact: opt, witnessStatement: opt, witnessConfidential: opt, comments: opt,
   consentTrue: z.literal("on"), consentReview: z.literal("on"), consentConfidential: z.literal("on"),
-  consentTerms: z.literal("on", { errorMap: () => ({ message: "Please agree to the Terms of Use." }) }),
+  consentTerms: z.literal("on"),
 });
 
 export async function POST(req: Request) {
+  const { t } = await getDictionary();
+  const e = t.apiErrors;
   if (!rateLimit("report:" + clientIp(req.headers), 20, 30 * 60_000))
-    return NextResponse.json({ error: "Too many submissions from this connection. Please try again later." }, { status: 429 });
+    return NextResponse.json({ error: e.tooManyReports }, { status: 429 });
 
   let form: FormData;
-  try { form = await req.formData(); } catch { return NextResponse.json({ error: "Invalid submission." }, { status: 400 }); }
+  try { form = await req.formData(); } catch { return NextResponse.json({ error: e.invalid }, { status: 400 }); }
   if (form.get("website")) return NextResponse.json({ ok: true, caseId: "HRS-0000-000000" }); // honeypot
-  if (!(await verifyCaptcha(form.get("altcha"))))
-    return NextResponse.json({ error: "The security check failed or expired. Please tick “I'm not a robot” again." }, { status: 400 });
+  if (!(await verifyCaptcha(form.get(CAPTCHA_FIELD), clientIp(req.headers))))
+    return NextResponse.json({ error: t.captcha.failed }, { status: 400 });
 
   const raw: Record<string, string> = {};
   for (const [k, v] of form.entries()) if (typeof v === "string") raw[k] = v;
   const parsed = schema.safeParse(raw);
   if (!parsed.success) {
-    const first = parsed.error.issues[0];
-    return NextResponse.json({ error: `${first?.path.join(".") || "Form"}: ${first?.message}` }, { status: 400 });
+    const field = String(parsed.error.issues[0]?.path[0] ?? "");
+    const msg = field === "description" ? e.describe : field === "consentTerms" ? e.agreeTerms : e.invalid;
+    return NextResponse.json({ error: msg }, { status: 400 });
   }
   const d = parsed.data;
   const anonymous = d.anonymous === "yes";
@@ -60,24 +65,24 @@ export async function POST(req: Request) {
   let uploadedRaw: unknown = [];
   try { uploadedRaw = JSON.parse(String(form.get("uploaded") || "[]")); } catch { uploadedRaw = null; }
   const uploadedParsed = uploadedSchema.safeParse(uploadedRaw);
-  if (!uploadedParsed.success) return NextResponse.json({ error: "Evidence upload is invalid. Please attach the files again." }, { status: 400 });
+  if (!uploadedParsed.success) return NextResponse.json({ error: e.evidenceInvalid }, { status: 400 });
   const uploaded = uploadedParsed.data;
-  if (files.length + uploaded.length > MAX_EVIDENCE_FILES) return NextResponse.json({ error: `Maximum ${MAX_EVIDENCE_FILES} files.` }, { status: 400 });
+  if (files.length + uploaded.length > MAX_EVIDENCE_FILES) return NextResponse.json({ error: fill(e.maxFiles, { max: MAX_EVIDENCE_FILES }) }, { status: 400 });
   for (const f of [...files, ...uploaded]) {
-    if (f instanceof File && f.size > MAX_EVIDENCE_BYTES) return NextResponse.json({ error: `${f.name} is larger than 25 MB.` }, { status: 400 });
-    if (!ALLOWED_EVIDENCE.test(f.type)) return NextResponse.json({ error: `${f.name}: file type not accepted.` }, { status: 400 });
+    if (f instanceof File && f.size > MAX_EVIDENCE_BYTES) return NextResponse.json({ error: fill(e.tooLarge, { name: f.name }) }, { status: 400 });
+    if (!ALLOWED_EVIDENCE.test(f.type)) return NextResponse.json({ error: fill(e.fileType, { name: f.name }) }, { status: 400 });
   }
   // Each uploaded object must exist, be within limits, and not already belong to another report
   const directFiles: { storedAs: string; name: string; type: string; buf: Buffer }[] = [];
   if (uploaded.length) {
     const taken = await db.select({ s: evidence.storedAs }).from(evidence).where(inArray(evidence.storedAs, uploaded.map((u) => u.path)));
-    if (taken.length) return NextResponse.json({ error: "Evidence upload is invalid. Please attach the files again." }, { status: 400 });
+    if (taken.length) return NextResponse.json({ error: e.evidenceInvalid }, { status: 400 });
     for (const u of uploaded) {
       const buf = await readEvidence(u.path);
-      if (!buf) return NextResponse.json({ error: `${u.name} did not finish uploading. Please try again.` }, { status: 400 });
+      if (!buf) return NextResponse.json({ error: fill(e.notFinished, { name: u.name }) }, { status: 400 });
       if (buf.length > MAX_EVIDENCE_BYTES) {
         await deleteEvidence([u.path]);
-        return NextResponse.json({ error: `${u.name} is larger than 25 MB.` }, { status: 400 });
+        return NextResponse.json({ error: fill(e.tooLarge, { name: u.name }) }, { status: 400 });
       }
       directFiles.push({ storedAs: u.path, name: u.name, type: u.type, buf });
     }

@@ -69,12 +69,3 @@ export const MAX_EVIDENCE_FILES = 4;
 export const MAX_EVIDENCE_BYTES = 25 * 1024 * 1024;
 export const ALLOWED_EVIDENCE = /^(image\/|video\/|audio\/|application\/pdf|application\/msword|application\/vnd\.openxmlformats|text\/plain)/;
 
-/** Terms of use from hrsat.org — shown on /terms, the report form and the tracking page */
-export const TERMS_OF_USE = [
-  "The information you provide is truthful to the best of your knowledge.",
-  "You have permission to submit any files or evidence you upload.",
-  "You understand that submitting a report does not guarantee an investigation or legal action.",
-  "You will not knowingly submit false, misleading, or malicious information.",
-  "GHRD may remove reports or restrict access where the platform is misused.",
-  "We do not sell personal information or use submitted material for commercial purposes.",
-] as const;
