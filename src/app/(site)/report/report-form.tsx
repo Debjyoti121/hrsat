@@ -6,7 +6,8 @@ import {
   ArrowLeft, ArrowRight, Check, CheckCircle2, Copy, FileText, Loader2, Lock, Paperclip, Plus, ShieldCheck, Trash2, UploadCloud, X,
 } from "lucide-react";
 import { toast } from "sonner";
-import { COUNTRIES, GENDERS, MAX_EVIDENCE_BYTES, MAX_EVIDENCE_FILES, RELATIONSHIPS, VIOLATION_TYPES, YES_NO_UNKNOWN } from "@/lib/constants";
+import { COUNTRIES, GENDERS, MAX_EVIDENCE_BYTES, MAX_EVIDENCE_FILES, RELATIONSHIPS, TERMS_OF_USE, VIOLATION_TYPES, YES_NO_UNKNOWN } from "@/lib/constants";
+import { PoweredBy } from "@/components/site/powered-by";
 import { cn, formatBytes } from "@/lib/utils";
 
 const STEPS = [
@@ -205,6 +206,7 @@ export function ReportForm() {
             <Lock className="size-5 text-gold-400" />
             <p className="mt-4 text-sm leading-relaxed text-white/70">Your submission is encrypted in transit. Evidence files are fingerprinted (SHA-256) and only accessible to the reviewer assigned to your case.</p>
           </div>
+          <PoweredBy tone="light" className="w-full" />
         </div>
       </aside>
 
@@ -227,6 +229,23 @@ export function ReportForm() {
           {/* All steps stay mounted so every field is submitted; only the active one is shown. */}
           <div className="mt-8">
             <fieldset data-step={0} className={cn("grid gap-5 sm:grid-cols-2", step !== 0 && "hidden")}>
+              <div className="rounded-2xl border border-line bg-paper-2/60 p-5 text-sm sm:col-span-2">
+                <p className="font-heading font-semibold text-ink-900">Before you start — terms of use</p>
+                <p className="mt-1.5 leading-relaxed text-body">
+                  HRSAT is <strong className="text-ink-900">not an emergency service</strong>. If you or someone else is in immediate danger, contact local emergency services.
+                  Submitting a report does not automatically lead to an investigation or legal action.
+                </p>
+                <details className="group mt-3">
+                  <summary className="cursor-pointer list-none font-medium text-ink-900 underline-offset-4 hover:underline">
+                    <span className="group-open:hidden">Show the terms of use</span><span className="hidden group-open:inline">Hide the terms of use</span>
+                  </summary>
+                  <p className="mt-3 text-body">By using HRSAT you agree that:</p>
+                  <ul className="mt-2 space-y-1.5">
+                    {TERMS_OF_USE.map((t) => <li key={t} className="flex gap-2.5 text-body"><span className="mt-2 size-1.5 shrink-0 rounded-full bg-gold-500" />{t}</li>)}
+                  </ul>
+                </details>
+                <a href="/terms" target="_blank" rel="noreferrer" className="mt-3 inline-block font-medium text-gold-600 underline underline-offset-4">Read the full terms &amp; disclaimer (opens in a new tab)</a>
+              </div>
               <div className="sm:col-span-2">
                 <Choices label="Are you reporting anonymously?" name="anonymous" required defaultValue="no" onChange={(v) => setAnonymous(v as "yes" | "no")}
                   options={[{ value: "yes", label: "Yes, I want to remain anonymous" }, { value: "no", label: "No, I want to provide my details" }]} />
@@ -354,6 +373,10 @@ export function ReportForm() {
                   <input type="checkbox" name={n} required className="mt-0.5 size-4 accent-[#e7a33e]" /> <span>{t}</span>
                 </label>
               ))}
+              <label className="choice items-start">
+                <input type="checkbox" name="consentTerms" required className="mt-0.5 size-4 accent-[#e7a33e]" />
+                <span>I have read and agree to the <a href="/terms" target="_blank" rel="noreferrer" className="font-medium text-ink-900 underline underline-offset-4">Terms of Use &amp; Disclaimer</a>.</span>
+              </label>
             </fieldset>
           </div>
 

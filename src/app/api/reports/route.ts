@@ -32,6 +32,7 @@ const schema = z.object({
   involved: opt, authoritiesInvolved: opt, authoritiesDetail: opt, reportedBefore: opt, reportedBeforeDetail: opt,
   hasWitnesses: opt, witnessName: opt, witnessContact: opt, witnessStatement: opt, witnessConfidential: opt, comments: opt,
   consentTrue: z.literal("on"), consentReview: z.literal("on"), consentConfidential: z.literal("on"),
+  consentTerms: z.literal("on", { errorMap: () => ({ message: "Please agree to the Terms of Use." }) }),
 });
 
 export async function POST(req: Request) {

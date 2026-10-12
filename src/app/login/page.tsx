@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { LoginForm } from "./login-form";
+import { PoweredBy } from "@/components/site/powered-by";
 import { img } from "@/lib/images";
 
 export const metadata: Metadata = { title: "Team sign-in", robots: { index: false } };
@@ -18,6 +19,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         <div className="relative max-w-md">
           <h1 className="display text-5xl leading-[1.02]">Case review, done with care.</h1>
           <p className="mt-5 text-white/65">The HRSAT dashboard is restricted to authorised documentation teams. All access is logged.</p>
+          <PoweredBy className="mt-8" />
         </div>
         <div className="relative flex items-center gap-2 text-sm text-white/50"><ShieldCheck className="size-4 text-gold-500" /> Signed sessions · role-based access · audit trail</div>
       </div>
@@ -27,6 +29,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           <h2 className="mt-10 text-3xl font-semibold tracking-tight">Sign in</h2>
           <p className="mt-2 text-slate-600">Access the HRSAT case dashboard.</p>
           <LoginForm next={next} />
+          <PoweredBy tone="light" className="mt-10 lg:hidden" />
         </div>
       </div>
     </div>

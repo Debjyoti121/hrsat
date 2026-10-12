@@ -1,12 +1,11 @@
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowUpRight, Mail, MapPin } from "lucide-react";
 import { Logo } from "./logo";
 import { CONTACT } from "@/lib/constants";
-import { img } from "@/lib/images";
+import { PoweredBy } from "./powered-by";
 
 const cols = [
-  { title: "Platform", links: [["Report a violation", "/report"], ["Track a report", "/track"], ["Security & privacy", "/security"]] },
+  { title: "Platform", links: [["Report a violation", "/report"], ["Track a report", "/track"], ["Security & privacy", "/security"], ["Terms of use", "/terms"]] },
   { title: "Organisation", links: [["About HRSAT", "/about"], ["Contact", "/contact"], ["Team sign-in", "/login"]] },
 ];
 
@@ -21,12 +20,7 @@ export function Footer() {
               A secure human rights reporting and documentation platform built to help victims, witnesses, defenders,
               journalists and organisations report violations safely and responsibly.
             </p>
-            <div className="mt-6 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[.03] p-3 pr-5 w-fit">
-              <div className="rounded-xl bg-white p-1.5">
-                <Image src={img("ghrdLogo")} alt="Global Human Rights Defence" width={40} height={70} className="h-10 w-auto" />
-              </div>
-              <div className="text-xs leading-snug text-white/60">Powered by<br /><span className="text-sm font-medium text-white">Global Human Rights Defence</span></div>
-            </div>
+            <PoweredBy className="mt-6" />
           </div>
           {cols.map((c) => (
             <div key={c.title} className="lg:col-span-2">

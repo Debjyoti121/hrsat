@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Reveal } from "./reveal";
+import { PoweredBy } from "./powered-by";
 
 // `eyebrow` is only used as the section's aria-label; hrsat.org's design has no kicker labels.
 export function PageHero({ eyebrow, title, accent, intro, image, children }: {
@@ -18,6 +19,7 @@ export function PageHero({ eyebrow, title, accent, intro, image, children }: {
           </h1>
           {intro && <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">{intro}</p>}
           {children}
+          <div className="mt-10 flex justify-center"><PoweredBy /></div>
         </Reveal>
       </div>
     </section>
